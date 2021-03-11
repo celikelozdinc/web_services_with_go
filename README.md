@@ -17,3 +17,9 @@ npm install
 ```bash
 ng serve --open
 ```
+
+
+## Testing Basic HTTP Handlers
+
+![bar](./img/bar.png)
+![baz](./img/baz.png)
