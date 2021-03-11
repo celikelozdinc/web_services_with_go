@@ -27,4 +27,5 @@ ng serve --open
 ### baz endpoint (*`GET`*)
 ![baz](./img/baz.png)
 
-### product endpoint (*`GET`*)
+### products endpoint (*`GET`*)
+![products](./img/products.png)
