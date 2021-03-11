@@ -21,5 +21,10 @@ ng serve --open
 
 ## Testing Basic HTTP Handlers
 
+### bar endpoint (*`GET`*)
 ![bar](./img/bar.png)
+
+### baz endpoint (*`GET`*)
 ![baz](./img/baz.png)
+
+### product endpoint (*`GET`*)
