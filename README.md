@@ -1,6 +1,7 @@
 
 
 ## Install node.js
+[Installation directives](https://muhammetkucuk.com/install-node-js-from-linux-tar-gz-file/)
 [Installation](https://github.com/nodesource/distributions/blob/master/README.md)
 
 ## Install angular CLI for building project && install dependencies
