@@ -29,3 +29,6 @@ ng serve --open
 
 ### products endpoint (*`GET`*)
 ![products](./img/products.png)
+
+### product/<id> endpoint (*`GET`*)
+![path parameters](./img/url_parameters.png)
