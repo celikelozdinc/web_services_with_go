@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type (
@@ -74,12 +75,24 @@ func productHandler(writer http.ResponseWriter, req *http.Request) {
 	writer.Write(product) // => Actual Response
 }
 
+func middlewareHandler(handler http.Handler) http.Handler {
+	return http.HandlerFunc(func(writer http.ResponseWriter, req *http.Request) {
+		log.Printf("Entering middleware at %s", time.Now())
+		handler.ServeHTTP(writer, req)
+		log.Printf("Exiting middleware at %s", time.Now())
+	})
+}
+
 func main() {
 
 	http.Handle("/bar", &barHandler{Message: "bar is called"})
 	http.HandleFunc("/baz", bazHandler)
 	http.HandleFunc("/products", productsHandler)
-	http.HandleFunc("/products/", productHandler) //=> For parsing URL path parameters
+
+	// By using middleware
+	productItemHandler := http.HandlerFunc(productHandler)
+	http.Handle("/products/", middlewareHandler(productItemHandler)) //=> For parsing URL path parameters
+
 	http.ListenAndServe(":1717", nil)
 }
 
