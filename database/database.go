@@ -3,7 +3,6 @@ package database
 import (
 	"database/sql"
 	"log"
-	"time"
 )
 
 var DbConnection *sql.DB
@@ -15,7 +14,11 @@ func SetupDatabase() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	DbConnection.SetMaxOpenConns(3)
-	DbConnection.SetMaxIdleConns(3)
-	DbConnection.SetConnMaxLifetime(60 * time.Second)
+
+	/*
+		// For connection pooling
+			DbConnection.SetMaxOpenConns(3)
+			DbConnection.SetMaxIdleConns(3)
+			DbConnection.SetConnMaxLifetime(60 * time.Second)
+	*/
 }
