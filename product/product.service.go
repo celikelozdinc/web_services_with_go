@@ -37,7 +37,10 @@ func bazHandler(writer http.ResponseWriter, req *http.Request) {
 func productsHandler(writer http.ResponseWriter, req *http.Request) {
 	switch req.Method {
 	case http.MethodGet:
-		productList := getProductList()
+		productList, getErr := getProductList()
+		if getErr != nil {
+			writer.WriteHeader(http.StatusInternalServerError)
+		}
 		log.Printf("productsHandler() :: Will convert => %#v", productList)
 		productsInJSON, marshallErr := json.Marshal(productList)
 		if marshallErr != nil {
@@ -61,7 +64,7 @@ func productHandler(writer http.ResponseWriter, req *http.Request) {
 	}
 
 	// TODO : need a method for finding product by its unique ID
-	product := getProduct(productID)
+	product, _ := getProduct(productID)
 	p, marshallErr := json.Marshal(product)
 	if marshallErr != nil {
 		writer.WriteHeader(http.StatusInternalServerError)

@@ -1,12 +1,15 @@
 package product
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"os"
 	"sync"
+
+	database "github.com/celikelozdinc/web_services_with_go/database"
 )
 
 // Store our product list in memory
@@ -45,21 +48,68 @@ func loadProductMap() (map[int]Product, error) {
 	return prodMap, nil
 }
 
-func getProduct(productID int) *Product {
+func getProduct(productID int) (*Product, error) {
 	productMap.RLock()
 	defer productMap.RUnlock()
-	if product, ok := productMap.m[productID]; ok {
-		return &product
+	row := database.DbConnection.QueryRow(`SELECT 
+	productId, 
+	manufacturer, 
+	sku, 
+	upc, 
+	pricePerUnit, 
+	quantityOnHand, 
+	productName 
+	FROM products 
+	WHERE productId = ?`, productID)
+
+	product := &Product{}
+	err := row.Scan(
+		&product.ProductID,
+		&product.Manufacturer,
+		&product.Sku,
+		&product.Upc,
+		&product.PricePerUnit,
+		&product.QuantityOnHand,
+		&product.ProductName,
+	)
+	if err == sql.ErrNoRows {
+		return nil, nil
+	} else if err != nil {
+		log.Println(err)
+		return nil, err
 	}
-	return nil
+	return product, nil
 }
 
-func getProductList() []Product {
+func getProductList() ([]Product, error) {
 	productMap.RLock()
-	products := make([]Product, 0, len(productMap.m))
-	for _, value := range productMap.m {
-		products = append(products, value)
+	defer productMap.RUnlock()
+	results, err := database.DbConnection.Query(`SELECT 
+	productId, 
+	manufacturer, 
+	sku, 
+	upc, 
+	pricePerUnit, 
+	quantityOnHand, 
+	productName 
+	FROM products`)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
 	}
-	productMap.RUnlock()
-	return products
+	defer results.Close()
+	products := make([]Product, 0)
+	for results.Next() {
+		var product Product
+		results.Scan(&product.ProductID,
+			&product.Manufacturer,
+			&product.Sku,
+			&product.Upc,
+			&product.PricePerUnit,
+			&product.QuantityOnHand,
+			&product.ProductName)
+
+		products = append(products, product)
+	}
+	return products, nil
 }

@@ -1,4 +1,8 @@
 
+## Install mysql driver
+```bash
+go get -u -v github.com/go-sql-driver/mysql
+```
 
 ## Install node.js
 [Installation directives](https://muhammetkucuk.com/install-node-js-from-linux-tar-gz-file/)
